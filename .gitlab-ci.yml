@@ -1,15 +1,15 @@
 variables:
   BUILD_TAG: ${CI_COMMIT_BRANCH}-build-${CI_PIPELINE_ID}
 
-  ############################ CI PRODUCTION
+  ############################ CI DEVELOP
   DOCKER_REGISTRY_DEVELOP: 611717736928.dkr.ecr.ap-southeast-1.amazonaws.com
   REPO_DEVELOP: ecr-uplive-intranet-frontend
 
-  # ############################ CD PRODUCTION
-  # CI_AWS_ECS_SERVICE_DEVELOP: ecs-svc-mep-caplize-frontend-prod
-  # CI_AWS_ECS_TASK_DEFINITION_DEVELOP: td-mep-caplize-frontend-prod
+  # ############################ CD DEVELOP
+  # CI_AWS_ECS_SERVICE_DEVELOP: ecs-svc-mep-caplize-frontend-develop
+  # CI_AWS_ECS_TASK_DEFINITION_DEVELOP: td-mep-caplize-frontend-develop
   # AWS_DEFAULT_REGION_DEVELOP: ap-southeast-1
-  # CI_AWS_ECS_CLUSTER_DEVELOP: ecs-mepcalize-prod
+  # CI_AWS_ECS_CLUSTER_DEVELOP: ecs-mepcalize-develop
 
 include:
   - project: 'mep/ci-template'
