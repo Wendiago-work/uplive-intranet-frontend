@@ -3,13 +3,13 @@ variables:
 
   ############################ CI DEVELOP
   DOCKER_REGISTRY_DEVELOP: 611717736928.dkr.ecr.ap-southeast-1.amazonaws.com
-  REPO_DEVELOP: ecr-uplive-intranet-frontend
+  REPO_DEVELOP: ecr-upliveintranet-frontend
 
-  # ############################ CD DEVELOP
-  # CI_AWS_ECS_SERVICE_DEVELOP: ecs-svc-mep-caplize-frontend-develop
-  # CI_AWS_ECS_TASK_DEFINITION_DEVELOP: td-mep-caplize-frontend-develop
-  # AWS_DEFAULT_REGION_DEVELOP: ap-southeast-1
-  # CI_AWS_ECS_CLUSTER_DEVELOP: ecs-mepcalize-develop
+  ############################ CD DEVELOP
+  CI_AWS_ECS_SERVICE_DEVELOP: ecs-svc-upliveintranet-frontend-prod
+  CI_AWS_ECS_TASK_DEFINITION_DEVELOP: td-upliveintranet-frontend-prod
+  AWS_DEFAULT_REGION_DEVELOP: ap-southeast-1
+  CI_AWS_ECS_CLUSTER_DEVELOP: ecs-upliveintranet-prod
 
 include:
   - project: 'mep/ci-template'
