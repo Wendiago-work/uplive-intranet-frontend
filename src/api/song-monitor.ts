@@ -1,7 +1,9 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? '/api'
-const COUNTRY_CSV_URL = '/country.csv'
+const COUNTRY_CSV_URL =
+  import.meta.env.VITE_COUNTRY_CSV_URL ??
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vRt5UzH0OQARBJQjtIagJzsPTa5u1VfrkTRDQS1lkHPxm0Nz5AGwEQR3Z9ALvULStpENXFd6cktzuRF/pub?gid=1507620471&single=true&output=csv'
 
 export type SongRecord = {
   id: string
