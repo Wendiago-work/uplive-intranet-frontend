@@ -1,257 +1,256 @@
 country,country_code
-Chad,TD
-Cuba,CU
-Fiji,FJ
-Guam,GU
-Iran,IR
-Iraq,IQ
-Laos,LA
-Mali,ML
-Niue,NU
-Oman,OM
-Peru,PE
-Togo,TG
-Aruba,AW
-Benin,BJ
-Chile,CL
-China,CN
-Egypt,EG
-Gabon,GA
-Ghana,GH
-Haiti,HT
-India,IN
-Italy,IT
-Japan,JP
-Kenya,KE
-Libya,LY
-Macau,MO
-Malta,MT
-Nauru,NR
-Nepal,NP
-Niger,NE
-Palau,PW
-Qatar,QA
-Samoa,WS
-Spain,ES
-Sudan,SD
-Syria,SY
-Tonga,TO
-Yemen,YE
-Angola,AO
-Belize,BZ
-Bhutan,BT
-Brazil,BR
-Brunei,BN
-Canada,CA
-Cyprus,CY
-France,FR
-Gambia,GM
-Greece,GR
-Guinea,GN
-Guyana,GY
-Israel,IL
-Jersey,JE
-Jordan,JO
-Kosovo,XK
-Kuwait,KW
-Latvia,LV
-Malawi,MW
-Mexico,MX
-Monaco,MC
-Norway,NO
-Panama,PA
-Poland,PL
-Russia,RU
-Rwanda,RW
-Serbia,RS
-Sweden,SE
-Taiwan,TW
-Turkey,TR
-Tuvalu,TV
-Uganda,UG
-Zambia,ZM
+Afghanistan,AF
 Albania,AL
 Algeria,DZ
+American Samoa,AS
 Andorra,AD
+Angola,AO
+Anguilla,AI
+Anonymous Proxy,A1
+Antarctica,AQ
+Antigua & Barbuda,AG
+Argentina,AR
 Armenia,AM
+Aruba,AW
+Australia,AU
 Austria,AT
+Azerbaijan,AZ
 Bahamas,BS
 Bahrain,BH
+Bangladesh,BD
+Barbados,BB
 Belarus,BY
 Belgium,BE
+Belize,BZ
+Benin,BJ
 Bermuda,BM
+Bhutan,BT
 Bolivia,BO
+Bosnia & Herzegovina,BA
+Botswana,BW
+Bouvet Island,BV
+Brazil,BR
+British Indian Ocean Territory,IO
+British Virgin Islands,VG
+Brunei,BN
+Bulgaria,BG
+Burkina Faso,BF
 Burundi,BI
+Cambodia,KH
+Cameroon,CM
+Canada,CA
+Cape Verde,CV
+Caribbean Netherlands,BQ
+Cayman Islands,KY
+Central African Republic,CF
+Chad,TD
+Chile,CL
+China,CN
+Christmas Island,CX
+Cocos (Keeling) Islands,CC
+Colombia,CO
 Comoros,KM
+Congo - Brazzaville,CG
+Congo - Kinshasa,CD
+Cook Islands,CK
+Costa Rica,CR
+Country Undefined - Asia/Pacific Region,AP
+Country Undefined - Europe,EU
 Croatia,HR
+Cuba,CU
+Curaçao,CW
+Cyprus,CY
 Czechia,CZ
+Côte d’Ivoire,CI
 Denmark,DK
+Djibouti,DJ
+Dominica,DM
+Dominican Republic,DO
 Ecuador,EC
+Egypt,EG
+El Salvador,SV
+Equatorial Guinea,GQ
 Eritrea,ER
 Estonia,EE
+Ethiopia,ET
+Falkland Islands (Islas Malvinas),FK
+Faroe Islands,FO
+Fiji,FJ
 Finland,FI
+France,FR
+French Guiana,GF
+French Polynesia,PF
+French Southern Territories (the),TF
+Gabon,GA
+Gambia,GM
 Georgia,GE
 Germany,DE
+Ghana,GH
+Gibraltar,GI
+Greece,GR
+Greenland,GL
 Grenada,GD
+Guadeloupe,GP
+Guam,GU
+Guatemala,GT
+Guernsey,GG
+Guinea,GN
+Guinea-Bissau,GW
+Guyana,GY
+Haiti,HT
+Heard Island and McDonald Islands,HM
+Holy See (the),VA
+Honduras,HN
+Hong Kong,HK
 Hungary,HU
 Iceland,IS
+India,IN
+Indonesia,ID
+Iran,IR
+Iraq,IQ
 Ireland,IE
+Isle of Man,IM
+Israel,IL
+Italy,IT
 Jamaica,JM
+Japan,JP
+Jersey,JE
+Jordan,JO
+Kazakhstan,KZ
+Kenya,KE
+Kiribati,KI
+Kosovo,XK
+Kuwait,KW
+Kyrgyzstan,KG
+Laos,LA
+Latvia,LV
 Lebanon,LB
 Lesotho,LS
 Liberia,LR
-Mayotte,YT
-Moldova,MD
-Morocco,MA
-Namibia,NA
-Nigeria,NG
-Romania,RO
-Senegal,SN
-Somalia,SO
-Tokelau,TK
-Tunisia,TN
-Ukraine,UA
-Uruguay,UY
-Vanuatu,VU
-Vietnam,VN
-Anguilla,AI
-Barbados,BB
-Botswana,BW
-Bulgaria,BG
-Cambodia,KH
-Cameroon,CM
-Colombia,CO
-Curaçao,CW
-Djibouti,DJ
-Dominica,DM
-Ethiopia,ET
-Guernsey,GG
-Honduras,HN
-Kiribati,KI
+Libya,LY
+Liechtenstein,LI
+Lithuania,LT
+Luxembourg,LU
+Macau,MO
+Macedonia (FYROM),MK
+Madagascar,MG
+Malawi,MW
 Malaysia,MY
 Maldives,MV
-Mongolia,MN
-Pakistan,PK
-Paraguay,PY
-Pitcairn,PN
-Portugal,PT
-Réunion,RE
-Slovakia,SK
-Slovenia,SI
-Suriname,SR
-Tanzania,TZ
-Thailand,TH
-Zimbabwe,ZW
-Argentina,AR
-Australia,AU
-Gibraltar,GI
-Greenland,GL
-Guatemala,GT
-Hong Kong,HK
-Indonesia,ID
-Lithuania,LT
-Mauritius,MU
-Nicaragua,NI
-Palestine,PS
-Singapore,SG
-Sri Lanka,LK
-St. Lucia,LC
-Swaziland,SZ
-Venezuela,VE
-Antarctica,AQ
-Azerbaijan,AZ
-Bangladesh,BD
-Cape Verde,CV
-Costa Rica,CR
-Guadeloupe,GP
-Kazakhstan,KZ
-Kyrgyzstan,KG
-Luxembourg,LU
-Madagascar,MG
+Mali,ML
+Malta,MT
+Marshall Islands,MH
 Martinique,MQ
 Mauritania,MR
+Mauritius,MU
+Mayotte,YT
+Mexico,MX
 Micronesia,FM
+Moldova,MD
+Monaco,MC
+Mongolia,MN
 Montenegro,ME
 Montserrat,MS
+Morocco,MA
 Mozambique,MZ
-San Marino,SM
-Seychelles,SC
-St. Helena,SH
-St. Martin,MF
-Tajikistan,TJ
-Uzbekistan,UZ
-Afghanistan,AF
-El Salvador,SV
-Isle of Man,IM
+Myanmar (Burma),MM
+Namibia,NA
+Nauru,NR
+Nepal,NP
+Netherlands Antilles,AN
 Netherlands,NL
+New Caledonia,NC
 New Zealand,NZ
+Nicaragua,NI
+Niger,NE
+Nigeria,NG
+Niue,NU
+Norfolk Island,NF
 North Korea,KP
+Northern Mariana Islands,MP
+Norway,NO
+Oman,OM
+Other Country,O1
+Pakistan,PK
+Palau,PW
+Palestine,PS
+Panama,PA
+Papua New Guinea,PG
+Paraguay,PY
+Peru,PE
 Philippines,PH
+Pitcairn,PN
+Poland,PL
+Portugal,PT
 Puerto Rico,PR
+Qatar,QA
+Romania,RO
+Russia,RU
+Rwanda,RW
+Réunion,RE
+Samoa,WS
+San Marino,SM
+Saudi Arabia,SA
+Senegal,SN
+Serbia,RS
+Seychelles,SC
+Sierra Leone,SL
+Singapore,SG
+Sint Maarten,SX
+Slovakia,SK
+Slovenia,SI
+Solomon Islands,SB
+Somalia,SO
+South Africa,ZA
+South Georgia and the South Sandwich Islands,GS
 South Korea,KR
 South Sudan,SS
-Switzerland,CH
-Timor-Leste,TL
-Burkina Faso,BF
-Cook Islands,CK
-Saudi Arabia,SA
-Sierra Leone,SL
-Sint Maarten,SX
-South Africa,ZA
-Turkmenistan,TM
-Bouvet Island,BV
-Faroe Islands,FO
-French Guiana,GF
-Guinea-Bissau,GW
-Liechtenstein,LI
-New Caledonia,NC
-Other Country,O1
-United States,US
-American Samoa,AS
-Cayman Islands,KY
-Holy See (the),VA
-Norfolk Island,NF
-United Kingdom,GB
-Western Sahara,EH
-Åland Islands,AX
-Anonymous Proxy,A1
-Myanmar (Burma),MM
-Solomon Islands,SB
+Spain,ES
+Sri Lanka,LK
 St. Barthélemy,BL
-Christmas Island,CX
-Congo - Kinshasa,CD
-Côte d’Ivoire,CI
-French Polynesia,PF
-Marshall Islands,MH
-Papua New Guinea,PG
-Antigua & Barbuda,AG
-Equatorial Guinea,GQ
-Macedonia (FYROM),MK
+St. Helena,SH
 St. Kitts & Nevis,KN
-Trinidad & Tobago,TT
-Wallis and Futuna,WF
-Dominican Republic,DO
-Congo - Brazzaville,CG
-U.S. Virgin Islands,VI
-Bosnia & Herzegovina,BA
-"France, Metropolitan",FX
-Netherlands Antilles,AN
-Svalbard & Jan Mayen,SJ
-United Arab Emirates,AE
-Caribbean Netherlands,BQ
+St. Lucia,LC
+St. Martin,MF
 St. Pierre & Miquelon,PM
-British Virgin Islands,VG
-São Tomé & Príncipe,ST
-Turks & Caicos Islands,TC
-Cocos (Keeling) Islands,CC
-Central African Republic,CF
-Northern Mariana Islands,MP
 St. Vincent & Grenadines,VC
-Country Undefined - Europe,EU
-British Indian Ocean Territory,IO
-Falkland Islands (Islas Malvinas),FK
-French Southern Territories (the),TF
-Heard Island and McDonald Islands,HM
-Country Undefined - Asia/Pacific Region,AP
+Sudan,SD
+Suriname,SR
+Svalbard & Jan Mayen,SJ
+Swaziland,SZ
+Sweden,SE
+Switzerland,CH
+Syria,SY
+São Tomé & Príncipe,ST
+Taiwan,TW
+Tajikistan,TJ
+Tanzania,TZ
+Thailand,TH
+Timor-Leste,TL
+Togo,TG
+Tokelau,TK
+Tonga,TO
+Trinidad & Tobago,TT
+Tunisia,TN
+Turkey,TR
+Turkmenistan,TM
+Turks & Caicos Islands,TC
+Tuvalu,TV
+U.S. Virgin Islands,VI
+Uganda,UG
+Ukraine,UA
+United Arab Emirates,AE
+United Kingdom,GB
 United States Minor Outlying Islands (the),UM
-South Georgia and the South Sandwich Islands,GS
+United States,US
+Uruguay,UY
+Uzbekistan,UZ
+Vanuatu,VU
+Venezuela,VE
+Vietnam,VN
+Wallis and Futuna,WF
+Western Sahara,EH
+Yemen,YE
+Zambia,ZM
+Zimbabwe,ZW
+Åland Islands,AX

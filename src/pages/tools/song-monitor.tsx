@@ -1,143 +1,216 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { Check, ChevronsUpDown, Loader2 } from 'lucide-react'
+import {
+  useSongMonitorApps,
+  useSongMonitorConditions,
+  useSongMonitorCountries,
+  useSongMonitorMerged,
+  type SongPerformanceRecord,
+} from '@/api/song-monitor'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../components/ui/select'
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '../../components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/popover'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../../components/ui/table'
+import { cn } from '@/lib/utils'
+import { downloadCsv } from '@/lib/csv'
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? '/api'
-const COUNTRY_CSV_URL = '/country.csv'
-type AppRow = { appId: string }
-type ConditionRow = string
-type CountryRow = { country: string; country_code: string }
+type ComboOption = { value: string; label: string }
+
+type ComboboxProps = {
+  label: string
+  value: string
+  onChange: (val: string) => void
+  options: ComboOption[]
+  placeholder: string
+  searchPlaceholder: string
+  emptyLabel?: string
+  loading?: boolean
+  disabled?: boolean
+  className?: string
+}
+
+function Combobox({
+  label,
+  value,
+  onChange,
+  options,
+  placeholder,
+  searchPlaceholder,
+  emptyLabel = 'No results found.',
+  loading = false,
+  disabled = false,
+  className,
+}: ComboboxProps) {
+  const [open, setOpen] = useState(false)
+
+  const selected = useMemo(() => options.find((o) => o.value === value), [options, value])
+
+  return (
+    <div className={cn('flex flex-col gap-1', className)}>
+      <label className="text-sm font-medium text-foreground">{label}</label>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="min-w-[220px] justify-between"
+            disabled={disabled}
+          >
+            <span className="truncate">
+              {selected ? selected.label : loading ? 'Loading…' : placeholder}
+            </span>
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[260px] p-0">
+          <Command
+            filter={(value, search, keywords) => {
+              const term = search.trim().toLowerCase()
+              if (!term) return 1
+              const haystack = [value, ...(keywords ?? [])].join(' ').toLowerCase()
+              return haystack.includes(term) ? 1 : 0
+            }}
+          >
+            <CommandInput placeholder={searchPlaceholder} />
+            <CommandList>
+              <CommandEmpty>{loading ? 'Loading…' : emptyLabel}</CommandEmpty>
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.value}
+                    keywords={[option.label, option.value]}
+                    onSelect={(currentValue) => {
+                      onChange(currentValue === value ? '' : currentValue)
+                      setOpen(false)
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        'mr-2 h-4 w-4',
+                        value === option.value ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                    <span className="truncate">{option.label}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}
 
 export default function SongMonitorPage() {
-  const [appId, setAppId] = useState('')
-  const [condition, setCondition] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [payload, setPayload] = useState<unknown>(null)
-  const [appOptions, setAppOptions] = useState<string[]>([])
-  const [appLoadError, setAppLoadError] = useState<string | null>(null)
-  const [appLoading, setAppLoading] = useState(false)
-  const [conditionOptions, setConditionOptions] = useState<string[]>([])
-  const [conditionLoading, setConditionLoading] = useState(false)
-  const [conditionLoadError, setConditionLoadError] = useState<string | null>(null)
-  const [countryOptions, setCountryOptions] = useState<CountryRow[]>([])
-  const [country, setCountry] = useState('')
-  const [countryLoading, setCountryLoading] = useState(false)
-  const [countryLoadError, setCountryLoadError] = useState<string | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const [appId, setAppId] = useState(() => searchParams.get('appId') ?? '')
+  const [condition, setCondition] = useState(() => searchParams.get('condition') ?? '')
+  const [country, setCountry] = useState(() => searchParams.get('country') ?? '')
 
   useEffect(() => {
-    const run = async () => {
-      setAppLoading(true)
-      try {
-        const res = await fetch(`${API_BASE}/song-monitor/apps`)
-        if (!res.ok) throw new Error(`Failed to load apps (${res.status})`)
-        const data: unknown = await res.json()
-        const ids = Array.isArray(data)
-          ? (data as AppRow[])
-              .map((row) => row?.appId)
-              .filter((v): v is string => typeof v === 'string' && v.length > 0)
-          : []
-        setAppOptions(ids)
-      } catch (e) {
-        setAppLoadError(e instanceof Error ? e.message : String(e))
-      } finally {
-        setAppLoading(false)
-      }
-    }
-    void run()
-  }, [appId])
+    const next = new URLSearchParams()
+    if (appId) next.set('appId', appId)
+    if (condition) next.set('condition', condition)
+    if (country) next.set('country', country)
+    setSearchParams(next, { replace: true })
+  }, [appId, condition, country, setSearchParams])
 
-  // load country list from CSV once
-  useEffect(() => {
-    const loadCountries = async () => {
-      setCountryLoading(true)
-      try {
-        const res = await fetch(COUNTRY_CSV_URL)
-        if (!res.ok) throw new Error(`Failed to load countries (${res.status})`)
-        const text = await res.text()
-        const rows = text.split(/\r?\n/).filter((l) => l.trim().length > 0)
-        const [, ...dataRows] = rows // skip header
-        const parsed: CountryRow[] = dataRows
-          .map((line) => line.split(','))
-          .filter((cols) => cols.length >= 2)
-          .map(([country, country_code]) => ({
-            country: country.trim(),
-            country_code: country_code.trim(),
-          }))
-        setCountryOptions(parsed)
-      } catch (e) {
-        setCountryLoadError(e instanceof Error ? e.message : String(e))
-      } finally {
-        setCountryLoading(false)
-      }
-    }
-    void loadCountries()
-  }, [])
+  const {
+    data: appOptions = [],
+    isPending: appLoading,
+    error: appError,
+  } = useSongMonitorApps()
 
-  useEffect(() => {
-    const loadConditions = async () => {
-      if (!appId) return
-      setConditionLoading(true)
-      setConditionLoadError(null)
-      try {
-        const res = await fetch(`${API_BASE}/song-monitor/conditions?appId=${encodeURIComponent(appId)}`)
-        if (!res.ok) throw new Error(`Failed to load conditions (${res.status})`)
-        const data: unknown = await res.json()
-        const conditions = Array.isArray(data)
-          ? (data as ConditionRow[]).filter((g): g is string => typeof g === 'string' && g.length > 0)
-          : []
-        setConditionOptions(conditions)
-      } catch (e) {
-        setConditionLoadError(e instanceof Error ? e.message : String(e))
-        setConditionOptions([])
-      } finally {
-        setConditionLoading(false)
-      }
-    }
-    void loadConditions()
-  }, [appId])
+  const {
+    data: conditionOptions = [],
+    isPending: conditionLoading,
+    error: conditionError,
+  } = useSongMonitorConditions(appId)
+
+  const {
+    data: countryOptions = [],
+    isPending: countryLoading,
+    error: countryError,
+  } = useSongMonitorCountries()
+
+  // disable auto run query
+  const {
+    data: mergedRows,
+    isFetching: mergedLoading,
+    error: mergedError,
+    refetch: refetchMerged,
+  } = useSongMonitorMerged({ appId, condition, country }, { enabled: false })
+
+  const appComboOptions = useMemo(() => appOptions.map((id) => ({ value: id, label: id })), [appOptions])
+  const conditionComboOptions = useMemo(
+    () => conditionOptions.map((code) => ({ value: code, label: code })),
+    [conditionOptions],
+  )
+  const countryComboOptions = useMemo(
+    () =>
+      countryOptions.map((c) => ({
+        value: c.country,
+        label: `${c.country} (${c.country_code})`,
+      })),
+    [countryOptions],
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!appId.trim() || !condition.trim() || !country.trim()) return
-    setLoading(true)
-    setError(null)
-    setPayload(null)
-    try {
-      const url = `${API_BASE}/song-monitor?appId=${encodeURIComponent(appId.trim())}&condition=${encodeURIComponent(
-        condition.trim(),
-      )}&country=${encodeURIComponent(country.trim())}`
-      const res = await fetch(url)
-      const text = await res.text()
-      let body: unknown = text
-      try {
-        body = JSON.parse(text)
-      } catch {
-        // leave as text
-      }
-      if (!res.ok) {
-        const message = typeof body === 'string' ? body : 'Request failed'
-        throw new Error(message)
-      }
-      setPayload(body)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
-    } finally {
-      setLoading(false)
-    }
+    await refetchMerged()
+  }
+
+  const displayError = (err: unknown) =>
+    err instanceof Error ? err.message : err ? String(err) : null
+
+  const exportFileName = useMemo(() => {
+    const parts = ['songlist']
+    if (appId) parts.push(appId)
+    if (condition) parts.push(condition)
+    if (country) parts.push(country)
+    const safe = parts.join('_').replace(/[^a-z0-9_-]+/gi, '_')
+    return `${safe || 'songlist'}.csv`
+  }, [appId, condition, country])
+
+  const handleExport = () => {
+    if (!mergedRows || mergedRows.length === 0) return
+    const headers = [
+      'id',
+      'songName',
+      'artistName',
+      'rank',
+      'user_count',
+      'song_start_count',
+      'total_ads_per_DAU',
+    ]
+
+    downloadCsv(mergedRows as Record<string, unknown>[], headers, exportFileName)
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mt-8">
       <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-primary">Tools</p>
         <h1 className="text-2xl font-semibold">Song List Monitor</h1>
         <p className="text-sm text-muted-foreground">
           Query Firebase song lists and Metabase performance data by App ID and Condition.
@@ -146,91 +219,121 @@ export default function SongMonitorPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Run query</CardTitle>
+          <CardTitle className="text-primary">Filters</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="flex flex-wrap items-end gap-3" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-foreground" htmlFor="appId">
-                App ID
-              </label>
-              <Select value={appId} onValueChange={setAppId} disabled={appLoading || appOptions.length === 0}>
-                <SelectTrigger className="min-w-[220px]" aria-busy={appLoading}>
-                  <SelectValue placeholder={appLoading ? 'Loading…' : 'Select an app'} />
-                </SelectTrigger>
-                <SelectContent>
-                  {appOptions.map((id) => (
-                    <SelectItem key={id} value={id}>
-                      {id}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {appLoadError && <span className="text-xs text-destructive">{appLoadError}</span>}
+              <Combobox
+                label="App ID"
+                value={appId}
+                onChange={setAppId}
+                options={appComboOptions}
+                placeholder="Select an app"
+                searchPlaceholder="Search app..."
+                emptyLabel="No apps found."
+                loading={appLoading}
+                disabled={appLoading || appComboOptions.length === 0}
+              />
+              {appError && <span className="text-xs text-destructive">{displayError(appError)}</span>}
             </div>
+
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-foreground" htmlFor="condition">
-                Condition
-              </label>
-              <Select
+              <Combobox
+                label="Condition"
                 value={condition}
-                onValueChange={setCondition}
-                disabled={conditionLoading || conditionOptions.length === 0}
-              >
-                <SelectTrigger className="min-w-[160px]" aria-busy={conditionLoading}>
-                  <SelectValue placeholder={conditionLoading ? 'Loading…' : 'Select condition'} />
-                </SelectTrigger>
-                <SelectContent>
-                  {conditionOptions.map((code) => (
-                    <SelectItem key={code} value={code}>
-                      {code}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {conditionLoadError && <span className="text-xs text-destructive">{conditionLoadError}</span>}
+                onChange={setCondition}
+                options={conditionComboOptions}
+                placeholder="Select condition"
+                searchPlaceholder="Search condition..."
+                emptyLabel="No conditions found."
+                loading={conditionLoading}
+                disabled={conditionLoading || conditionComboOptions.length === 0}
+              />
+              {conditionError && <span className="text-xs text-destructive">{displayError(conditionError)}</span>}
             </div>
+
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-foreground" htmlFor="country">
-                Country
-              </label>
-              <Select
+              <Combobox
+                label="Country"
                 value={country}
-                onValueChange={setCountry}
-                disabled={countryLoading || countryOptions.length === 0}
-              >
-                <SelectTrigger className="min-w-[220px]" aria-busy={countryLoading}>
-                  <SelectValue placeholder={countryLoading ? 'Loading…' : 'Select a country'} />
-                </SelectTrigger>
-                <SelectContent>
-                  {countryOptions.map((c) => (
-                    <SelectItem key={c.country_code} value={c.country}>
-                      {c.country} ({c.country_code})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {countryLoadError && <span className="text-xs text-destructive">{countryLoadError}</span>}
+                onChange={setCountry}
+                options={countryComboOptions}
+                placeholder="Select a country"
+                searchPlaceholder="Search country..."
+                emptyLabel="No countries found."
+                loading={countryLoading}
+                disabled={countryLoading || countryComboOptions.length === 0}
+              />
+              {countryError && <span className="text-xs text-destructive">{displayError(countryError)}</span>}
             </div>
-            <Button
-              type="submit"
-              disabled={loading || !appId.trim() || !condition.trim() || !country.trim()}
-            >
-              {loading ? 'Running...' : 'Fetch'}
+
+            <Button type="submit" disabled={mergedLoading || !appId.trim() || !condition.trim() || !country.trim()}>
+              {mergedLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Running...
+                </>
+              ) : (
+                'Fetch'
+              )}
             </Button>
-            {error && <span className="text-sm font-semibold text-destructive">{error}</span>}
+            {mergedError && <span className="text-sm font-semibold text-destructive">{displayError(mergedError)}</span>}
           </form>
         </CardContent>
       </Card>
 
       <Card className="min-h-[320px]">
-        <CardHeader>
-          <CardTitle>Response</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-primary">Songlist</CardTitle>
+          <Button
+            size="sm"
+            onClick={handleExport}
+            disabled={!mergedRows || mergedRows.length === 0 || mergedLoading}
+          >
+            Export CSV
+          </Button>
         </CardHeader>
         <CardContent>
-          <pre className="max-h-[420px] overflow-auto rounded-lg bg-slate-950/90 p-3 text-xs text-slate-50">
-            {payload ? JSON.stringify(payload, null, 2) : loading ? 'Loading…' : 'No data yet.'}
-          </pre>
+          {mergedLoading && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Fetching…
+            </div>
+          )}
+          {!mergedLoading && mergedRows && mergedRows.length === 0 && (
+            <p className="text-sm text-muted-foreground">No merged data returned.</p>
+          )}
+          {!mergedLoading && mergedRows && mergedRows.length > 0 && (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[120px]">Song ID</TableHead>
+                  <TableHead>Song</TableHead>
+                  <TableHead>Artist</TableHead>
+                  <TableHead>Rank</TableHead>
+                  <TableHead>User Count</TableHead>
+                  <TableHead>Song Starts</TableHead>
+                  <TableHead>Ads / DAU</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {mergedRows.map((row: SongPerformanceRecord) => (
+                  <TableRow key={row.id}>
+                    <TableCell>{row.id}</TableCell>
+                    <TableCell>{row.songName}</TableCell>
+                    <TableCell>{row.artistName}</TableCell>
+                    <TableCell>{row.rank ?? '—'}</TableCell>
+                    <TableCell>{row.user_count ?? '—'}</TableCell>
+                    <TableCell>{row.song_start_count ?? '—'}</TableCell>
+                    <TableCell>{row.total_ads_per_DAU ?? '—'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+          {!mergedLoading && !mergedRows && (
+            <p className="text-sm text-muted-foreground">No data yet. Run a query to see results.</p>
+          )}
         </CardContent>
       </Card>
     </div>

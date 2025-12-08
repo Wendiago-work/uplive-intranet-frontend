@@ -8,6 +8,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-title: 'Realce', 'Inter', 'system-ui', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -39,23 +40,24 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-footer: var(--footer)
 }
 
 :root {
   --background: oklch(1 0 0);
-  --foreground: oklch(0.2464 0.0939 283.0700);
+  --foreground: oklch(0.22 0 0);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.5213 0.2145 282.1200);
+  --card-foreground: var(--foreground);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2464 0.0939 283.0700);
+  --popover-foreground: var(--foreground);
   --primary: oklch(0.5213 0.2145 282.1200);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.9700 0 0);
-  --secondary-foreground: oklch(0.2464 0.0939 283.0700);
+  --secondary-foreground: var(--foreground);
   --muted: oklch(0.9700 0 0);
   --muted-foreground: oklch(0.5560 0 0);
   --accent: oklch(0.9700 0 0);
-  --accent-foreground: oklch(0.2464 0.0939 283.0700);
+  --accent-foreground: var(--foreground);
   --destructive: oklch(0.5770 0.2450 27.3250);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.9220 0 0);
@@ -67,16 +69,18 @@
   --chart-4: oklch(0.4910 0.2700 292.5810);
   --chart-5: oklch(0.4320 0.2320 292.7590);
   --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.2464 0.0939 283.0700);
+  --sidebar-foreground: var(--foreground);
   --sidebar-primary: oklch(0.5213 0.2145 282.1200);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.9700 0 0);
   --sidebar-accent-foreground: oklch(0.2050 0 0);
   --sidebar-border: oklch(0.9220 0 0);
   --sidebar-ring: oklch(0.7020 0.1830 293.5410);
+  --footer: oklch(0.2454 0.0924 283.35);
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-title: 'Realce', 'Inter', 'system-ui', sans-serif;
   --radius: 0.625rem;
   --shadow-x: 0;
   --shadow-y: 1px;
@@ -128,13 +132,46 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --footer: oklch(0.2454 0.0924 283.35)
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
+  @font-face {
+    font-family: 'Realce';
+    src: url('/src/assets/fonts/Realce-Black-v0.006.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+}
+
+/* Minimal utility classes for UX improvements */
+@layer utilities {
+
+  /* Simple hover lift for cards */
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px -2px hsl(0 0% 0% / 0.15);
+  }
+
+  /* Focus ring enhancement */
+  .focus-ring-primary:focus {
+    @apply ring-2 ring-primary/30;
+  }
+}
+
+@utility container {
+  @apply mx-auto px-4 sm:px-8 lg:px-16;
 }
