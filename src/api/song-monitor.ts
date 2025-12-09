@@ -16,6 +16,7 @@ export type SongPerformanceRecord = SongRecord & {
   user_count?: number | null
   song_start_count?: number | null
   total_ads_per_DAU?: number | null
+  song_score?: number | null
 }
 
 export type SongMonitorResponse = {

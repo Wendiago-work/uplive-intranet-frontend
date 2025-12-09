@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react'
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import type { ColumnDef, ColumnSizingInfoState, ColumnSizingState } from '@tanstack/react-table'
 import {
   useSongMonitorApps,
   useSongMonitorConditions,
@@ -203,10 +205,79 @@ export default function SongMonitorPage() {
       'user_count',
       'song_start_count',
       'total_ads_per_DAU',
+      'song_score',
     ]
 
     downloadCsv(mergedRows as Record<string, unknown>[], headers, exportFileName)
   }
+
+  const formatTwoDecimals = (value: number | null | undefined) =>
+    value === null || value === undefined ? '—' : value.toFixed(2)
+
+  const columns = useMemo<ColumnDef<SongPerformanceRecord>[]>(
+    () => [
+      { accessorKey: 'id', header: 'Song ID', size: 80 },
+      {
+        accessorKey: 'songName',
+        header: 'Song',
+        size: 160, // narrower default; user can resize
+        cell: ({ getValue }) => <span className="block w-full truncate">{getValue<string>()}</span>,
+      },
+      {
+        accessorKey: 'artistName',
+        header: 'Artist',
+        size: 140,
+        cell: ({ getValue }) => <span className="block w-full truncate">{getValue<string>()}</span>,
+      },
+      { accessorKey: 'rank', header: 'Rank', size: 90, cell: ({ getValue }) => getValue<number | null>() ?? '—' },
+      {
+        accessorKey: 'user_count',
+        header: 'User Count',
+        size: 110,
+        cell: ({ getValue }) => getValue<number | null>() ?? '—',
+      },
+      {
+        accessorKey: 'song_start_count',
+        header: 'Song Starts',
+        size: 110,
+        cell: ({ getValue }) => getValue<number | null>() ?? '—',
+      },
+      {
+        accessorKey: 'total_ads_per_DAU',
+        header: 'Ads / DAU',
+        size: 110,
+        cell: ({ getValue }) => formatTwoDecimals(getValue<number | null | undefined>()),
+      },
+      {
+        accessorKey: 'song_score',
+        header: 'Song Score',
+        size: 110,
+        cell: ({ getValue }) => formatTwoDecimals(getValue<number | null | undefined>()),
+      },
+    ],
+    [],
+  )
+
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({})
+  const [columnSizingInfo, setColumnSizingInfo] = useState<ColumnSizingInfoState>({
+    startOffset: null,
+    startSize: null,
+    deltaOffset: null,
+    deltaPercentage: null,
+    columnSizingStart: [],
+    isResizingColumn: false,
+  })
+
+  const table = useReactTable({
+    data: mergedRows ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    columnResizeMode: 'onChange',
+    enableColumnResizing: true,
+    state: { columnSizing, columnSizingInfo },
+    onColumnSizingChange: setColumnSizing,
+    onColumnSizingInfoChange: setColumnSizingInfo,
+  })
 
   return (
     <div className="space-y-4 mt-8">
@@ -304,32 +375,56 @@ export default function SongMonitorPage() {
             <p className="text-sm text-muted-foreground">No merged data returned.</p>
           )}
           {!mergedLoading && mergedRows && mergedRows.length > 0 && (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[120px]">Song ID</TableHead>
-                  <TableHead>Song</TableHead>
-                  <TableHead>Artist</TableHead>
-                  <TableHead>Rank</TableHead>
-                  <TableHead>User Count</TableHead>
-                  <TableHead>Song Starts</TableHead>
-                  <TableHead>Ads / DAU</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mergedRows.map((row: SongPerformanceRecord) => (
-                  <TableRow key={row.id}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.songName}</TableCell>
-                    <TableCell>{row.artistName}</TableCell>
-                    <TableCell>{row.rank ?? '—'}</TableCell>
-                    <TableCell>{row.user_count ?? '—'}</TableCell>
-                    <TableCell>{row.song_start_count ?? '—'}</TableCell>
-                    <TableCell>{row.total_ads_per_DAU ?? '—'}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="overflow-x-auto">
+              <Table
+                className="min-w-max table-fixed"
+                style={{ width: table.getTotalSize(), minWidth: '100%' }}
+              >
+                <colgroup>
+                  {table.getVisibleLeafColumns().map((column) => (
+                    <col key={column.id} style={{ width: column.getSize() }} />
+                  ))}
+                </colgroup>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <TableHead
+                          key={header.id}
+                          style={{ width: header.getSize() ? `${header.getSize()}px` : undefined }}
+                          className="relative group"
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                          {header.column.getCanResize() && (
+                            <div
+                              onMouseDown={header.getResizeHandler()}
+                              onTouchStart={header.getResizeHandler()}
+                              className="absolute right-0 top-0 h-full w-1.5 cursor-col-resize select-none bg-muted/60"
+                            />
+                          )}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          style={{ width: cell.column.getSize() ? `${cell.column.getSize()}px` : undefined }}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
           {!mergedLoading && !mergedRows && (
             <p className="text-sm text-muted-foreground">No data yet. Run a query to see results.</p>
