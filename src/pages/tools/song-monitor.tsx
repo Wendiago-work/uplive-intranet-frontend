@@ -401,8 +401,10 @@ export default function SongMonitorPage() {
                             <div
                               onMouseDown={header.getResizeHandler()}
                               onTouchStart={header.getResizeHandler()}
-                              className="absolute right-0 top-0 h-full w-1.5 cursor-col-resize select-none bg-muted/60"
-                            />
+                              className="absolute right-0 top-0 h-full w-3 cursor-col-resize select-none"
+                            >
+                              <div className="mx-auto h-full w-px rounded-full bg-muted-foreground/60 group-hover:bg-primary" />
+                            </div>
                           )}
                         </TableHead>
                       ))}
